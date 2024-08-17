@@ -1,0 +1,12 @@
+{
+  "name": "desv-food-planing",
+  "version": "0.0.0",
+  "description": "Personal meal planner",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test",
+    "test:watch": "node --test --watch"
+  },
+  "author": "Deyan Svetoslavov",
+  "license": "ISC"
+}
