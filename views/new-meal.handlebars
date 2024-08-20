@@ -1,0 +1,13 @@
+<form action="/new-meal" method="post">
+    <label for="food">Food</label>
+    <select id="food-select" name="food">
+        {{#each foodInformations}}
+        <option value={{name}}>{{name}}</option>
+        {{/each}}
+    </select>
+
+    <label for="food-quantity">Quantity in grams</label>
+    <input name="food-quantity" type="number" min="0" />
+
+    <button type="submit">Submit</button>
+</form>

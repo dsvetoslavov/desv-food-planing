@@ -12,10 +12,22 @@ app.set("views", "./views");
 
 app.get("/", (req, res) => {
   const foodInformations = mealInformation.foodInformations;
-  
+
   res.render("home", {
-    foodInformations: foodInformations, 
+    foodInformations: foodInformations,
   });
+});
+
+app.get("/new-meal", (req, res) => {
+  const foodInformations = mealInformation.foodInformations;
+
+  res.render("new-meal", {
+    foodInformations,
+  });
+});
+
+app.post("/new-meal", (req, res) => {
+  console.log(req.formData);
 });
 
 app.listen(port, () => {
