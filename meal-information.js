@@ -1,4 +1,4 @@
-const foodInformation = [
+const foodInformations = [
   {
     name: "Oats",
     carbsPer100g: 68,
@@ -166,3 +166,4 @@ function getMealMacros(foodNamesWithQuantities, foodInformation) {
 }
 
 module.exports.getMealMacros = getMealMacros;
+module.exports.foodInformations = foodInformations;
