@@ -8,5 +8,9 @@
     "test:watch": "node --test --watch"
   },
   "author": "Deyan Svetoslavov",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-handlebars": "^8.0.1"
+  }
 }
