@@ -1,7 +1,7 @@
 const express = require("express");
 const handlebars = require("express-handlebars");
-const mealInformation = require("./meal-information.js");
-const fs = require("fs");
+const foodInformation = require("./food-information.js")
+const mealsRepo = require("./mealsRepository.js");
 
 const port = 3000;
 
@@ -14,7 +14,7 @@ app.set("views", "./views");
 app.use(express.urlencoded());
 
 app.get("/", (req, res) => {
-  const foodInformations = mealInformation.foodInformations;
+  const foodInformations = foodInformation.foodInformations;
 
   res.render("home", {
     foodInformations: foodInformations,
@@ -22,28 +22,26 @@ app.get("/", (req, res) => {
 });
 
 app.get("/new-meal", (req, res) => {
-  const foodInformations = mealInformation.foodInformations;
+  const foodInformations = foodInformation.foodInformations;
+
+  const meals = mealsRepo.getAllMeals();
 
   res.render("new-meal", {
     foodInformations,
+    meals,
   });
 });
 
 app.post("/new-meal", (req, res, next) => {
-  const foodInformations = mealInformation.foodInformations;
+  const foodInformations = foodInformation.foodInformations;
 
-  console.log(req.body.food);
-  console.log(req.body["food-quantity"]);
+  const { food, "food-quantity": foodQuantity } = req.body;
 
-  if (!fs.existsSync("./meals.json")) {
-    fs.writeFileSync('./meals.json', '[]');
-  }
+  const meals = mealsRepo.getAllMeals();
+  meals.push({ food, foodQuantity: foodQuantity });
+  mealsRepo.saveAllMeals(meals);
 
-  const mealsRaw = fs.readFileSync("./meals.json");
-  const meals = JSON.parse(mealsRaw);
-  console.log(meals);
-
-  res.status(200).render("new-meal", { foodInformations });
+  res.status(200).render("new-meal", { foodInformations, meals });
 });
 
 app.listen(port, () => {

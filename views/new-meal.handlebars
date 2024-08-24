@@ -11,3 +11,11 @@
 
     <button type="submit">Submit</button>
 </form>
+
+<section>
+    <ul>
+        {{#each meals}}
+        <li>{{food}}x{{foodQuantity}} grams</li>
+        {{/each}}
+    </ul>
+</section>
