@@ -43,10 +43,15 @@ app.get("/meals", (req, res) => {
 app.post("/meals", (req, res, next) => {
   const foodInformations = foodInformation.foodInformations;
 
-  const { food, "food-quantity": foodQuantity } = req.body;
+  const { "food-id": foodId, "food-quantity": foodQuantity } = req.body;
+  const foodInfo = foodInformations.find(foodInfo => foodInfo.id === foodId);
+
+  if (foodInfo) {
+    res.status(400).render("meals");
+  }
 
   const meals = mealsRepo.getAllMeals();
-  meals.push({ food, foodQuantity: foodQuantity });
+  meals.push({ food: foodInfo.name, foodQuantity: foodQuantity });
   mealsRepo.saveAllMeals(meals);
 
   res.status(200).render("meals", { foodInformations, meals });

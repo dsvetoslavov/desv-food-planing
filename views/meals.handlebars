@@ -1,8 +1,8 @@
 <form action="/meals" method="post">
     <label for="food">Food</label>
-    <select id="food-select" name="food">
+    <select id="food-select" name="food-id">
         {{#each foodInformations}}
-        <option value={{name}}>{{name}}</option>
+        <option value={{id}}>{{name}}</option>
         {{/each}}
     </select>
 
