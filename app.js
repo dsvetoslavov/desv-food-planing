@@ -21,18 +21,26 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/new-meal", (req, res) => {
+app.get("/foods", (req, res) => {
+  const foodInformations = foodInformation.foodInformations;
+
+  res.render("foods", {
+    foodInformations: foodInformations,
+  });
+});
+
+app.get("/meals", (req, res) => {
   const foodInformations = foodInformation.foodInformations;
 
   const meals = mealsRepo.getAllMeals();
 
-  res.render("new-meal", {
+  res.render("meals", {
     foodInformations,
     meals,
   });
 });
 
-app.post("/new-meal", (req, res, next) => {
+app.post("/meals", (req, res, next) => {
   const foodInformations = foodInformation.foodInformations;
 
   const { food, "food-quantity": foodQuantity } = req.body;
@@ -41,7 +49,7 @@ app.post("/new-meal", (req, res, next) => {
   meals.push({ food, foodQuantity: foodQuantity });
   mealsRepo.saveAllMeals(meals);
 
-  res.status(200).render("new-meal", { foodInformations, meals });
+  res.status(200).render("meals", { foodInformations, meals });
 });
 
 app.listen(port, () => {
