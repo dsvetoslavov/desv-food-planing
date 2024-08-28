@@ -43,6 +43,7 @@ app.get("/meals", (req, res) => {
 app.post("/meals", (req, res, next) => {
   const foodInformations = foodInformation.foodInformations;
 
+  console.log(req.body);
   const { "food-id": foodId, "food-quantity": foodQuantity } = req.body;
   const foodInfo = foodInformations.find(foodInfo => foodInfo.id === foodId);
 
