@@ -1,6 +1,6 @@
 const express = require("express");
 const handlebars = require("express-handlebars");
-const foodInformation = require("./food-information.js")
+const foodInformation = require("./food-information.js");
 const mealsRepo = require("./mealsRepository.js");
 
 const port = 3000;
@@ -43,16 +43,23 @@ app.get("/meals", (req, res) => {
 app.post("/meals", (req, res, next) => {
   const foodInformations = foodInformation.foodInformations;
 
-  console.log(req.body);
-  const { "food-id": foodId, "food-quantity": foodQuantity } = req.body;
-  const foodInfo = foodInformations.find(foodInfo => foodInfo.id === foodId);
+  const { "meal-name": name, foods } = req.body;
+  const mealFoods = foods.map((food) => {
+    return {
+      foodId: food.id,
+      quantity: food.quantity,
+      foodInfo: foodInformations.find((foodInfo) => foodInfo.id === food.id),
+    };
+  });
 
-  if (foodInfo) {
+  const meal = { name, mealFoods };
+
+  if (mealFoods.some((mealFood) => !mealFood.foodId)) {
     res.status(400).render("meals");
   }
 
   const meals = mealsRepo.getAllMeals();
-  meals.push({ food: foodInfo.name, foodQuantity: foodQuantity });
+  meals.push(meal);
   mealsRepo.saveAllMeals(meals);
 
   res.status(200).render("meals", { foodInformations, meals });

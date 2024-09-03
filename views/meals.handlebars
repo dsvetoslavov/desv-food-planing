@@ -4,16 +4,17 @@
         <input type="text" id="input-meal-name" name="meal-name" />
     </div>
     <div id="container-meal-foods">
-        <div>
-            <label for="food">Food</label>
-            <select id="food-select" name="food-id">
+        <fieldset>
+            <legend>Meals food 1</legend>
+            <label for="food-id-0">Food</label>
+            <select id="food-id-0" name="foods[0][id]">
                 {{#each foodInformations}}
                 <option value={{id}}>{{name}}</option>
                 {{/each}}
             </select>
-            <label for="food-quantity">Quantity in grams</label>
-            <input name="food-quantity" type="number" min="0" />
-        </div>
+            <label for="food-quantity-0">Quantity in grams</label>
+            <input id="food-quantity-0" name="foods[0][quantity]" type="number" min="0" />
+        </fieldset>
     </div>
     <button id="button-add-food" type="button">Add food</button>
     <button type="submit">Submit</button>
@@ -22,24 +23,56 @@
 <section>
     <ul>
         {{#each meals}}
-        <li>{{food}}x{{foodQuantity}} grams</li>
+        <li>{{name}}</li>
+        <ul>
+            {{#each mealFoods}}
+            <li>{{foodInfo.name}} x{{quantity}}grams</li>
+            {{/each}}
+        </ul>
         {{/each}}
     </ul>
 </section>
 
 <script>
-    document.getElementById("button-add-food").addEventListener("click", function(event) {
+    let index = 0;
+
+    document.getElementById("button-add-food").addEventListener("click", function (event) {
         console.log('Adding a new food!')
+        index++;
         const contaimerMealFoods = document.getElementById('container-meal-foods');
+
+        const fieldset = document.createElement("fieldset");
+        const legend = document.createElement("legend");
+
+        legend.innerText = `Meals food ${index + 1}`;
+
+        fieldset.appendChild(legend);
+
         const foodSelect = contaimerMealFoods.querySelector('select');
         const quantityInput = contaimerMealFoods.querySelector('input');
 
+        const newFoodIdLabel = document.createElement('label');
+        newFoodIdLabel.setAttribute('for', `food-id-${index}`)
+        newFoodIdLabel.innerText = 'Food';
+        fieldset.appendChild(newFoodIdLabel);
 
         const newFoodSelect = foodSelect.cloneNode(true);
-        const newQuantityInput = quantityInput.cloneNode(true);
+        newFoodSelect.setAttribute('id', `food-id-${index}`);
+        newFoodSelect.setAttribute('name', `foods[${index}][id]`);
 
-        contaimerMealFoods.appendChild(newFoodSelect);
-        contaimerMealFoods.appendChild(newQuantityInput);
+        fieldset.appendChild(newFoodSelect);
+
+        const newQuantityLabel = document.createElement('label');
+        newQuantityLabel.innerText = 'Quantity in grams'
+        newQuantityLabel.setAttribute('for', `food-quantity-${index}`)
+        fieldset.appendChild(newQuantityLabel);
+
+        const newQuantityInput = quantityInput.cloneNode(true);
+        newQuantityInput.setAttribute('id', `food-quantity-${index}`);
+        newQuantityInput.setAttribute('name', `foods[${index}][quantity]`);
+        fieldset.appendChild(newQuantityInput);
+
+        contaimerMealFoods.appendChild(fieldset);
     })
 
 </script>
