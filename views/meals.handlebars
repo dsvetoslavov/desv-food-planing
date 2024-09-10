@@ -4,7 +4,7 @@
         <input type="text" id="input-meal-name" name="meal-name" />
     </div>
     <div id="container-meal-foods">
-        <fieldset>
+        <fieldset data-index="0">
             <legend>Meals food 1</legend>
             <label for="food-id-0">Food</label>
             <select id="food-id-0" name="foods[0][id]">
@@ -16,7 +16,7 @@
             <input id="food-quantity-0" name="foods[0][quantity]" type="number" min="0" />
         </fieldset>
     </div>
-    <button id="button-add-food" type="button">Add food</button>
+    <button id="btn-add-food" type="button">Add food</button>
     <button type="submit">Submit</button>
 </form>
 
@@ -35,9 +35,25 @@
 
 <script>
     let index = 0;
+    function addRemoveButtonsEventListeners() {
+        const removeButtonsElements = document.getElementsByClassName("btn-remove-food");
+        const removeButtons = Array.from(removeButtonsElements);
 
-    document.getElementById("button-add-food").addEventListener("click", function (event) {
-        console.log('Adding a new food!')
+        removeButtons.forEach(function (btn) {
+            btn.addEventListener('click', function (event) {
+                const target = event.target;
+
+                const fieldSetToRemove = document.querySelector(`fieldset[data-index="${index}"]`);
+                const contaimerMealFoods = document.getElementById('container-meal-foods');
+                contaimerMealFoods.removeChild(fieldSetToRemove);
+                index--;
+            })
+        })
+    }
+
+    addRemoveButtonsEventListeners();
+
+    document.getElementById("btn-add-food").addEventListener("click", function (event) {
         index++;
         const contaimerMealFoods = document.getElementById('container-meal-foods');
 
@@ -61,6 +77,7 @@
         newFoodSelect.setAttribute('name', `foods[${index}][id]`);
 
         fieldset.appendChild(newFoodSelect);
+        fieldset.setAttribute('data-index', index)
 
         const newQuantityLabel = document.createElement('label');
         newQuantityLabel.innerText = 'Quantity in grams'
@@ -72,9 +89,19 @@
         newQuantityInput.setAttribute('name', `foods[${index}][quantity]`);
         fieldset.appendChild(newQuantityInput);
 
-        contaimerMealFoods.appendChild(fieldset);
-    })
+        const newRemoveBtn = document.createElement('button');
+        newRemoveBtn.setAttribute('id', `btn-remove-food-${index}`);
+        newRemoveBtn.setAttribute('class', 'btn-remove-food');
+        newRemoveBtn.setAttribute('type', 'button');
+        newRemoveBtn.setAttribute('data-index', index);
+        newRemoveBtn.innerText = "X";
 
+        fieldset.appendChild(newRemoveBtn);
+
+        contaimerMealFoods.appendChild(fieldset);
+
+        addRemoveButtonsEventListeners();
+    })
 </script>
 
 <style>
