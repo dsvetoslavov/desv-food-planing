@@ -42,11 +42,28 @@
         removeButtons.forEach(function (btn) {
             btn.addEventListener('click', function (event) {
                 const target = event.target;
+                const indexToRemove = target.dataset.index;
 
-                const fieldSetToRemove = document.querySelector(`fieldset[data-index="${index}"]`);
+                const fieldSetToRemove = document.querySelector(`fieldset[data-index="${indexToRemove}"]`);
                 const contaimerMealFoods = document.getElementById('container-meal-foods');
                 contaimerMealFoods.removeChild(fieldSetToRemove);
                 index--;
+
+                if (index === 0) {
+                    return;
+                }
+
+                const newRemoveBtn = document.createElement('button');
+                newRemoveBtn.setAttribute('id', `btn-remove-food-${index}`);
+                newRemoveBtn.setAttribute('class', 'btn-remove-food');
+                newRemoveBtn.setAttribute('type', 'button');
+                newRemoveBtn.setAttribute('data-index', index);
+                newRemoveBtn.innerText = "X";
+
+                const lastFieldSet = document.querySelector(`fieldset[data-index="${index}"]`);
+                lastFieldSet.appendChild(newRemoveBtn);
+
+                addRemoveButtonsEventListeners();
             })
         })
     }
@@ -54,6 +71,12 @@
     addRemoveButtonsEventListeners();
 
     document.getElementById("btn-add-food").addEventListener("click", function (event) {
+        const lastFieldSet = document.querySelector(`fieldset[data-index="${index}"]`);
+        const lastRemoveButton = document.getElementById(`btn-remove-food-${index}`);
+        if (lastRemoveButton) {
+            lastFieldSet.removeChild(lastRemoveButton);
+        }
+
         index++;
         const contaimerMealFoods = document.getElementById('container-meal-foods');
 
