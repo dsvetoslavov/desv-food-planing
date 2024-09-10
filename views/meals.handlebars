@@ -35,42 +35,10 @@
 
 <script>
     let index = 0;
-    function addRemoveButtonsEventListeners() {
-        const removeButtonsElements = document.getElementsByClassName("btn-remove-food");
-        const removeButtons = Array.from(removeButtonsElements);
 
-        removeButtons.forEach(function (btn) {
-            btn.addEventListener('click', function (event) {
-                const target = event.target;
-                const indexToRemove = target.dataset.index;
+    document.getElementById("btn-add-food").addEventListener("click", handleAddFoodBtnClicked);
 
-                const fieldSetToRemove = document.querySelector(`fieldset[data-index="${indexToRemove}"]`);
-                const contaimerMealFoods = document.getElementById('container-meal-foods');
-                contaimerMealFoods.removeChild(fieldSetToRemove);
-                index--;
-
-                if (index === 0) {
-                    return;
-                }
-
-                const newRemoveBtn = document.createElement('button');
-                newRemoveBtn.setAttribute('id', `btn-remove-food-${index}`);
-                newRemoveBtn.setAttribute('class', 'btn-remove-food');
-                newRemoveBtn.setAttribute('type', 'button');
-                newRemoveBtn.setAttribute('data-index', index);
-                newRemoveBtn.innerText = "X";
-
-                const lastFieldSet = document.querySelector(`fieldset[data-index="${index}"]`);
-                lastFieldSet.appendChild(newRemoveBtn);
-
-                addRemoveButtonsEventListeners();
-            })
-        })
-    }
-
-    addRemoveButtonsEventListeners();
-
-    document.getElementById("btn-add-food").addEventListener("click", function (event) {
+    function handleAddFoodBtnClicked() {
         const lastFieldSet = document.querySelector(`fieldset[data-index="${index}"]`);
         const lastRemoveButton = document.getElementById(`btn-remove-food-${index}`);
         if (lastRemoveButton) {
@@ -81,50 +49,82 @@
         const contaimerMealFoods = document.getElementById('container-meal-foods');
 
         const fieldset = document.createElement("fieldset");
+        fieldset.setAttribute('data-index', index)
+
         const legend = document.createElement("legend");
-
         legend.innerText = `Meals food ${index + 1}`;
-
         fieldset.appendChild(legend);
 
-        const foodSelect = contaimerMealFoods.querySelector('select');
-        const quantityInput = contaimerMealFoods.querySelector('input');
 
         const newFoodIdLabel = document.createElement('label');
         newFoodIdLabel.setAttribute('for', `food-id-${index}`)
         newFoodIdLabel.innerText = 'Food';
         fieldset.appendChild(newFoodIdLabel);
 
+        const foodSelect = contaimerMealFoods.querySelector('select');
         const newFoodSelect = foodSelect.cloneNode(true);
         newFoodSelect.setAttribute('id', `food-id-${index}`);
         newFoodSelect.setAttribute('name', `foods[${index}][id]`);
-
         fieldset.appendChild(newFoodSelect);
-        fieldset.setAttribute('data-index', index)
 
         const newQuantityLabel = document.createElement('label');
         newQuantityLabel.innerText = 'Quantity in grams'
         newQuantityLabel.setAttribute('for', `food-quantity-${index}`)
         fieldset.appendChild(newQuantityLabel);
 
+        const quantityInput = contaimerMealFoods.querySelector('input');
         const newQuantityInput = quantityInput.cloneNode(true);
         newQuantityInput.setAttribute('id', `food-quantity-${index}`);
         newQuantityInput.setAttribute('name', `foods[${index}][quantity]`);
         fieldset.appendChild(newQuantityInput);
 
+        const newRemoveBtn = createNewRemoveButton(index);
+        fieldset.appendChild(newRemoveBtn);
+
+        contaimerMealFoods.appendChild(fieldset);
+        addRemoveButtonsEventListeners();
+    }
+
+    function handleRemoveFoodBtnClicked(event) {
+        const target = event.target;
+        const indexToRemove = target.dataset.index;
+
+        const fieldSetToRemove = document.querySelector(`fieldset[data-index="${indexToRemove}"]`);
+        const contaimerMealFoods = document.getElementById('container-meal-foods');
+        contaimerMealFoods.removeChild(fieldSetToRemove);
+        index--;
+
+        if (index === 0) {
+            return;
+        }
+
+        const newRemoveBtn = createNewRemoveButton(index);
+        const lastFieldSet = document.querySelector(`fieldset[data-index="${index}"]`);
+        lastFieldSet.appendChild(newRemoveBtn);
+
+        addRemoveButtonsEventListeners();
+    }
+
+    function addRemoveButtonsEventListeners() {
+        const removeButtonsElements = document.getElementsByClassName("btn-remove-food");
+        const removeButtons = Array.from(removeButtonsElements);
+
+        removeButtons.forEach(function (btn) {
+            btn.addEventListener('click', handleRemoveFoodBtnClicked)
+        })
+    }
+
+    function createNewRemoveButton(index) {
         const newRemoveBtn = document.createElement('button');
+
         newRemoveBtn.setAttribute('id', `btn-remove-food-${index}`);
         newRemoveBtn.setAttribute('class', 'btn-remove-food');
         newRemoveBtn.setAttribute('type', 'button');
         newRemoveBtn.setAttribute('data-index', index);
         newRemoveBtn.innerText = "X";
 
-        fieldset.appendChild(newRemoveBtn);
-
-        contaimerMealFoods.appendChild(fieldset);
-
-        addRemoveButtonsEventListeners();
-    })
+        return newRemoveBtn;
+    }
 </script>
 
 <style>
