@@ -13,6 +13,10 @@ app.set("views", "./views");
 
 app.use(express.urlencoded());
 
+app.get("/login", (req, res) => {
+  res.render("login", { layout: false });
+});
+
 app.get("/", (req, res) => {
   const foodInformations = foodInformation.foodInformations;
 
