@@ -2,6 +2,7 @@ const express = require("express");
 const handlebars = require("express-handlebars");
 const foodInformation = require("./food-information.js");
 const mealsRepo = require("./mealsRepository.js");
+const mealInformation = require("./meal-information.js");
 
 const port = 3000;
 
@@ -56,7 +57,17 @@ app.post("/meals", (req, res, next) => {
     };
   });
 
-  const meal = { name, mealFoods };
+  const meal = {
+    name,
+    mealFoods,
+    macros: mealInformation.getMealMacros(
+      mealFoods.map((food) => ({
+        id: food.foodId,
+        portionInGramms: food.quantity,
+      })),
+      foodInformations
+    ),
+  };
 
   if (mealFoods.some((mealFood) => !mealFood.foodId)) {
     res.status(400).render("meals");

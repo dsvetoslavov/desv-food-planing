@@ -1,13 +1,15 @@
 const test = require("node:test");
 const assert = require("node:assert");
-
-const index = require("./index.js");
+const index = require("./meal-information");
+const { v4: uuidv4} = require("uuid")
 
 test("it should return the correct macros for 1 type of food for 100g", () => {
+  const oatsId = uuidv4();
   const macros = index.getMealMacros(
-    [{ name: "Oats", portionInGramms: 100 }],
+    [{ id: oatsId, portionInGramms: 100 }],
     [
       {
+        id: oatsId,
         name: "Oats",
         carbsPer100g: 68,
         proteinPer100g: 13,
@@ -26,10 +28,12 @@ test("it should return the correct macros for 1 type of food for 100g", () => {
 });
 
 test("it should return the correct macros for 1 type of food for 200g", () => {
+  const oatsId = uuidv4();
   const macros = index.getMealMacros(
-    [{ name: "Oats", portionInGramms: 200 }],
+    [{ id: oatsId, portionInGramms: 200 }],
     [
       {
+        id: oatsId,
         name: "Oats",
         carbsPer100g: 68,
         proteinPer100g: 13,
@@ -48,13 +52,16 @@ test("it should return the correct macros for 1 type of food for 200g", () => {
 });
 
 test("it should return the correct macros for 2 types of food for 100g", () => {
+  const oatsId = uuidv4();
+  const proteinPowderId = uuidv4();
   const macros = index.getMealMacros(
     [
-      { name: "Oats", portionInGramms: 100 },
-      { name: "Protein Powder", portionInGramms: 100 },
+      { id: oatsId, portionInGramms: 100 },
+      { id: proteinPowderId, portionInGramms: 100 },
     ],
     [
       {
+        id: oatsId,
         name: "Oats",
         carbsPer100g: 68,
         proteinPer100g: 13,
@@ -62,6 +69,7 @@ test("it should return the correct macros for 2 types of food for 100g", () => {
         calories: 389,
       },
       {
+        id: proteinPowderId,
         name: "Protein Powder",
         carbsPer100g: 5,
         proteinPer100g: 80,

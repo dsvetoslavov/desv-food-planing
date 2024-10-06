@@ -3,7 +3,7 @@ function getMealMacros(foodNamesWithQuantities, foodInformation) {
     (acc, curr) => {
       const portionMultiplier = curr.portionInGramms / 100;
       const foodMacros = foodInformation.find(
-        (foodInfo) => foodInfo.name === curr.name
+        (foodInfo) => foodInfo.id === curr.id
       );
 
       return {
