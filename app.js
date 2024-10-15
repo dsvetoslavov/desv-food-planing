@@ -1,18 +1,19 @@
 const express = require("express");
 const handlebars = require("express-handlebars");
 const foodInformation = require("./food-information.js");
-const mealsRepo = require("./mealsRepository.js");
 const mealInformation = require("./meal-information.js");
+const { MongoClient } = require("mongodb");
+
+const uri = "mongodb://localhost:27017";
 
 const port = 3000;
-
 const app = express();
 
 app.engine("handlebars", handlebars.engine());
 app.set("view engine", "handlebars");
 app.set("views", "./views");
 
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/login", (req, res) => {
   res.render("login", { layout: false });
@@ -34,10 +35,20 @@ app.get("/foods", (req, res) => {
   });
 });
 
-app.get("/meals", (req, res) => {
+app.get("/meals", async (req, res) => {
   const foodInformations = foodInformation.foodInformations;
 
-  const meals = mealsRepo.getAllMeals();
+  let meals = [];
+  const client = new MongoClient(uri);
+
+  try {
+    const db = client.db('desv-food-planing');
+    const collection = db.collection('meals');
+    meals = await collection.find().toArray();
+  } finally {
+    await client.close();
+  }
+
 
   res.render("meals", {
     foodInformations,
@@ -45,7 +56,8 @@ app.get("/meals", (req, res) => {
   });
 });
 
-app.post("/meals", (req, res, next) => {
+app.post("/meals", async (req, res, next) => {
+
   const foodInformations = foodInformation.foodInformations;
 
   const { "meal-name": name, foods } = req.body;
@@ -73,9 +85,19 @@ app.post("/meals", (req, res, next) => {
     res.status(400).render("meals");
   }
 
-  const meals = mealsRepo.getAllMeals();
-  meals.push(meal);
-  mealsRepo.saveAllMeals(meals);
+  let meals = [];
+  const client = new MongoClient(uri);
+
+  try {
+    const db = client.db('desv-food-planing');
+    const collection = db.collection('meals');
+
+    await collection.insertOne(meal);
+
+    meals = await collection.find({}).toArray();
+  } finally {
+    await client.close();
+  }
 
   res.status(200).render("meals", { foodInformations, meals });
 });
