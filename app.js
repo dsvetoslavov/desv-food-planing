@@ -42,13 +42,13 @@ app.get("/meals", async (req, res) => {
   const client = new MongoClient(uri);
 
   try {
-    const db = client.db('desv-food-planing');
-    const collection = db.collection('meals');
+    await client.connect();
+    const db = client.db("desv-food-planing");
+    const collection = db.collection("meals");
     meals = await collection.find().toArray();
   } finally {
     await client.close();
   }
-
 
   res.render("meals", {
     foodInformations,
@@ -56,8 +56,7 @@ app.get("/meals", async (req, res) => {
   });
 });
 
-app.post("/meals", async (req, res, next) => {
-
+app.post("/meals", async (req, res) => {
   const foodInformations = foodInformation.foodInformations;
 
   const { "meal-name": name, foods } = req.body;
@@ -89,8 +88,10 @@ app.post("/meals", async (req, res, next) => {
   const client = new MongoClient(uri);
 
   try {
-    const db = client.db('desv-food-planing');
-    const collection = db.collection('meals');
+    await client.connect();
+
+    const db = client.db("desv-food-planing");
+    const collection = db.collection("meals");
 
     await collection.insertOne(meal);
 
@@ -100,6 +101,26 @@ app.post("/meals", async (req, res, next) => {
   }
 
   res.status(200).render("meals", { foodInformations, meals });
+});
+
+app.get("/day-plans", async (req, res) => {
+  const foodInformations = foodInformation.foodInformations;
+
+  let meals = [];
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const db = client.db("desv-food-planing");
+    const collection = db.collection("meals");
+    meals = await collection.find().toArray();
+  } finally {
+    await client.close();
+  }
+
+  res.render("day-plans", {
+    meals,
+  });
 });
 
 app.listen(port, () => {

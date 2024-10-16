@@ -1,0 +1,101 @@
+<form method="POST" action="/day-plan">
+    <div>
+        <label for="day-plan-name">Name</label>
+        <input type="text" id="input-day-plan-name" name="day-plan-name" />
+    </div>
+    <div id="container-plans-meals">
+        <fieldset data-index="0">
+            <legend>Meal #1</legend>
+            <label for="meal-id-0">Meal</label>
+            <select id="meal-id-0" name="meals[0][id]">
+                {{#each meals}}
+                    <option value={{_id}}>{{name}}</option>
+                {{/each}}
+            </select>
+        </fieldset>
+    </div>
+    <button id="btn-add-meal" type="button">Add meal</button>
+    <button type="submit">Submit</button>
+</form>
+
+<script>
+    let index = 0;
+
+    document.getElementById("btn-add-meal").addEventListener("click", handleAddMealBtnClicked);
+
+    function handleAddMealBtnClicked() {
+        const lastFieldSet = document.querySelector(`fieldset[data-index="${index}"]`);
+        const lastRemoveButton = document.getElementById(`btn-remove-meal-${index}`);
+        if (lastRemoveButton) {
+            lastFieldSet.removeChild(lastRemoveButton);
+        }
+
+        index++;
+        const containerPlansMeals = document.getElementById('container-plans-meals');
+
+        const fieldset = document.createElement("fieldset");
+        fieldset.setAttribute('data-index', index)
+
+        const legend = document.createElement("legend");
+        legend.innerText = `Meals #${index + 1}`;
+        fieldset.appendChild(legend);
+
+        const newMealIdLabel = document.createElement('label');
+        newMealIdLabel.setAttribute('for', `meal-id-${index}`)
+        newMealIdLabel.innerText = 'Meal';
+        fieldset.appendChild(newMealIdLabel);
+
+        const mealSelect = containerPlansMeals.querySelector('select');
+        const newMealSelect = mealSelect.cloneNode(true);
+        newMealSelect.setAttribute('id', `meal-id-${index}`);
+        newMealSelect.setAttribute('name', `meals[${index}][id]`);
+        fieldset.appendChild(newMealSelect);
+
+        const newRemoveBtn = createNewRemoveButton(index);
+        fieldset.appendChild(newRemoveBtn);
+
+        containerPlansMeals.appendChild(fieldset);
+        addRemoveButtonsEventListeners();
+    }
+
+    function handleRemoveMealBtnClicked(event) {
+        const target = event.target;
+        const indexToRemove = target.dataset.index;
+
+        const fieldSetToRemove = document.querySelector(`fieldset[data-index="${indexToRemove}"]`);
+        const contaimerMealFoods = document.getElementById('container-plans-meals');
+        contaimerMealFoods.removeChild(fieldSetToRemove);
+        index--;
+
+        if (index === 0) {
+            return;
+        }
+
+        const newRemoveBtn = createNewRemoveButton(index);
+        const lastFieldSet = document.querySelector(`fieldset[data-index="${index}"]`);
+        lastFieldSet.appendChild(newRemoveBtn);
+
+        addRemoveButtonsEventListeners();
+    }
+
+    function addRemoveButtonsEventListeners() {
+        const removeButtonsElements = document.getElementsByClassName("btn-remove-meal");
+        const removeButtons = Array.from(removeButtonsElements);
+
+        removeButtons.forEach(function (btn) {
+            btn.addEventListener('click', handleRemoveMealBtnClicked)
+        })
+    }
+
+    function createNewRemoveButton(index) {
+        const newRemoveBtn = document.createElement('button');
+
+        newRemoveBtn.setAttribute('id', `btn-remove-meal-${index}`);
+        newRemoveBtn.setAttribute('class', 'btn-remove-meal');
+        newRemoveBtn.setAttribute('type', 'button');
+        newRemoveBtn.setAttribute('data-index', index);
+        newRemoveBtn.innerText = "X";
+
+        return newRemoveBtn;
+    }
+</script>
