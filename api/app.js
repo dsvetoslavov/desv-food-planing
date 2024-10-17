@@ -1,7 +1,7 @@
 const express = require("express");
 const handlebars = require("express-handlebars");
-const foodInformation = require("./food-information.js");
-const mealInformation = require("./meal-information.js");
+const foodInformation = require("../foods/static-food-information.repository.js");
+const mealInformation = require("../meals/meal-information.js");
 const { MongoClient } = require("mongodb");
 
 const uri = "mongodb://localhost:27017";
